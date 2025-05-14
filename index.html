@@ -34,6 +34,13 @@
     tr:nth-child(even) {
       background-color: #f0f2f5;
     }
+    td:nth-child(7) {
+      font-weight: bold;
+      color: #007bff;
+    } 
+    td:nth-child(7):contains('🧪') {
+      color: #8a2be2;
+    }
     .pendente {
       color: #b58900;
       font-weight: bold;
@@ -53,8 +60,9 @@
         <th>Nome</th>
         <th>Nascimento</th>
         <th>Contacto</th>
-        <th>Especialidade</th>
+        <th>Especialidade / Exame</th>
         <th>Médico</th>
+        <th>Tipo</th>
         <th>Estado</th>
       </tr>
     </thead>
