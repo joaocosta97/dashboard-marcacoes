@@ -33,27 +33,33 @@ async function carregarMarcacoes() {
     const dados = documento.data();
     const linha = document.createElement('tr');
 
-    const estadoBtn = document.createElement('button');
-    estadoBtn.textContent = dados.estado || 'pendente';
-    estadoBtn.className = dados.estado === 'tratado' ? 'tratado' : 'pendente';
-    estadoBtn.style.border = 'none';
-    estadoBtn.style.background = 'transparent';
-    estadoBtn.style.cursor = 'pointer';
-    estadoBtn.onclick = async () => {
-      const novoEstado = dados.estado === 'tratado' ? 'pendente' : 'tratado';
+    const estadoSelect = document.createElement('select');
+    const opcoesEstado = ['pendente', 'tratado', 'cancelado'];
+
+    opcoesEstado.forEach(op => {
+      const option = document.createElement('option');
+      option.value = op;
+      option.textContent = op.charAt(0).toUpperCase() + op.slice(1);
+      if (op === dados.estado) option.selected = true;
+      estadoSelect.appendChild(option);
+    });
+
+    estadoSelect.className = `estado-select ${dados.estado}`;
+    estadoSelect.onchange = async () => {
+      const novoEstado = estadoSelect.value;
       try {
         await updateDoc(doc(db, "marcacoes", documento.id), {
           estado: novoEstado
         });
-        carregarMarcacoes(); // recarrega tabela após alteração
+        carregarMarcacoes(); // recarrega para aplicar nova classe visual
       } catch (e) {
         alert('Erro ao atualizar estado.');
         console.error(e);
       }
     };
 
-    const estadoTd = document.createElement('td');
-    estadoTd.appendChild(estadoBtn);
+const estadoTd = document.createElement('td');
+estadoTd.appendChild(estadoSelect);
 
     linha.innerHTML = `
       <td>${dados.dataPedido?.toDate().toLocaleString('pt-PT') || ''}</td>
