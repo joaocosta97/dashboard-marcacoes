@@ -78,7 +78,7 @@ async function carregarMarcacoes() {
       <td>${dados.contacto || ''}</td>
       <td>${dados.especialidade || dados.exame || '-'}</td>
       <td>${dados.medico || '-'}</td>
-      <td>${dados.tipo === 'exame' ? '🧪 Exame' : '👨‍⚕️ Consulta'}</td>
+      <td>${dados.tipo === 'exame' ? 'Exame' : 'Consulta'}</td>
     `;
 
     linha.appendChild(estadoTd);
