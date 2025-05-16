@@ -22,10 +22,13 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const tabela = document.getElementById('marcacoes');
+const corpoPendentes = document.getElementById('marcacoes-pendentes');
+const corpoTratadas = document.getElementById('marcacoes-tratadas');
 
 async function carregarMarcacoes() {
-  tabela.innerHTML = ''; // limpar antes de carregar
+  corpoPendentes.innerHTML = '';
+  corpoTratadas.innerHTML = '';
+
   const q = query(collection(db, "marcacoes"), orderBy("dataPedido", "desc"));
   const querySnapshot = await getDocs(q);
 
@@ -52,21 +55,7 @@ async function carregarMarcacoes() {
     estadoSelect.style.cursor = 'pointer';
     estadoSelect.style.transition = 'background-color 0.3s ease, color 0.3s ease';
 
-    // aplica cor inicial
     aplicarEstiloEstado(estadoSelect, dados.estado);
-
-    estadoSelect.onchange = async () => {
-      const novoEstado = estadoSelect.value;
-      try {
-        await updateDoc(doc(db, "marcacoes", documento.id), {
-          estado: novoEstado
-        });
-        aplicarEstiloEstado(estadoSelect, novoEstado); // muda cor sem reload
-      } catch (e) {
-        alert('Erro ao atualizar estado.');
-        console.error(e);
-      }
-    };
 
     const estadoTd = document.createElement('td');
     estadoTd.appendChild(estadoSelect);
@@ -78,11 +67,40 @@ async function carregarMarcacoes() {
       <td>${dados.contacto || ''}</td>
       <td>${dados.especialidade || dados.exame || '-'}</td>
       <td>${dados.medico || '-'}</td>
-      <td>${dados.tipo === 'exame' ? 'Exame' : 'Consulta'}</td>
+      <td>${dados.tipo === 'exame' ? '🧪 Exame' : '👨‍⚕️ Consulta'}</td>
     `;
-
     linha.appendChild(estadoTd);
-    tabela.appendChild(linha);
+
+    // Adicionar à zona correta
+    if (dados.estado === 'pendente') {
+      corpoPendentes.appendChild(linha);
+    } else {
+      corpoTratadas.appendChild(linha);
+    }
+
+    estadoSelect.onchange = async () => {
+      const novoEstado = estadoSelect.value;
+      try {
+        await updateDoc(doc(db, "marcacoes", documento.id), {
+          estado: novoEstado
+        });
+
+        aplicarEstiloEstado(estadoSelect, novoEstado);
+
+        // Mover a linha para o novo local
+        if (novoEstado === 'pendente') {
+          corpoTratadas.removeChild(linha);
+          corpoPendentes.appendChild(linha);
+        } else {
+          corpoPendentes.removeChild(linha);
+          corpoTratadas.appendChild(linha);
+        }
+
+      } catch (e) {
+        alert('Erro ao atualizar estado.');
+        console.error(e);
+      }
+    };
   });
 }
 
