@@ -34,16 +34,11 @@ async function carregarMarcacoes() {
 
   querySnapshot.forEach((documento) => {
     const dados = documento.data();
-    const linha = document.createElement('tr');
     const idDoc = documento.id;
 
-    const expandirBtn = document.createElement('button');
-    expandirBtn.textContent = '➕';
-    expandirBtn.style.cursor = 'pointer';
-    expandirBtn.onclick = () => {
-      detalheRow.style.display = detalheRow.style.display === 'table-row' ? 'none' : 'table-row';
-      expandirBtn.textContent = detalheRow.style.display === 'table-row' ? '🔽' : '➕';
-    };
+    const linha = document.createElement('tr');
+    const detalheRow = document.createElement('tr');
+    detalheRow.style.display = 'none';
 
     const estadoSelect = document.createElement('select');
     const opcoesEstado = ['pendente', 'tratado', 'cancelado'];
@@ -86,30 +81,41 @@ async function carregarMarcacoes() {
       }
     };
 
+    const expandirBtn = document.createElement('button');
+    expandirBtn.textContent = '▼';
+    expandirBtn.style.border = 'none';
+    expandirBtn.style.background = 'transparent';
+    expandirBtn.style.cursor = 'pointer';
+    expandirBtn.style.fontSize = '16px';
+    expandirBtn.style.marginLeft = '10px';
+
+    expandirBtn.onclick = () => {
+      const isExpanded = detalheRow.style.display === 'table-row';
+      detalheRow.style.display = isExpanded ? 'none' : 'table-row';
+      expandirBtn.textContent = isExpanded ? '▼' : '▲';
+    };
+
     const estadoTd = document.createElement('td');
     estadoTd.appendChild(estadoSelect);
+    estadoTd.appendChild(expandirBtn);
 
     linha.innerHTML = `
       <td>${dados.dataPedido?.toDate().toLocaleString('pt-PT') || ''}</td>
       <td>${dados.nome || ''}</td>
-      <td colspan="4"></td>
+      <td>${dados.nascimento || '-'}</td>
+      <td>${dados.contacto || '-'}</td>
+      <td>${dados.especialidade || dados.exame || '-'}</td>
+      <td>${dados.medico || '-'}</td>
       <td>${dados.tipo === 'exame' ? '🧪 Exame' : '👨‍⚕️ Consulta'}</td>
     `;
-    linha.insertBefore(document.createElement('td').appendChild(expandirBtn), linha.firstChild);
     linha.appendChild(estadoTd);
 
-    const detalheRow = document.createElement('tr');
-    detalheRow.style.display = 'none';
     const detalheTd = document.createElement('td');
     detalheTd.colSpan = 9;
-
     detalheTd.innerHTML = `
-      <div style="padding: 10px; background-color: #f9f9f9; border-left: 4px solid #26a7b5;">
-        <strong>Contacto:</strong> ${dados.contacto || '-'}<br>
-        <strong>Nascimento:</strong> ${dados.nascimento || '-'}<br>
-        <strong>Médico:</strong> ${dados.medico || '-'}<br><br>
-        <label><strong>Obs.:</strong></label><br>
-        <textarea style="width: 100%; padding: 6px;" rows="3" placeholder="Escreva observações...">${dados.obs || ''}</textarea>
+      <div style="padding: 12px; background-color: #f5f5f5; border-left: 3px solid #26a7b5; border-radius: 4px;">
+        <label><strong>Observações:</strong></label><br>
+        <textarea style="width: 100%; padding: 6px; border-radius: 4px; font-family: 'Poppins', sans-serif;" rows="3" placeholder="Escreva observações...">${dados.obs || ''}</textarea>
       </div>
     `;
 
@@ -125,7 +131,6 @@ async function carregarMarcacoes() {
 
     detalheRow.appendChild(detalheTd);
 
-    // Inserir na tabela certa
     const destino = dados.estado === 'pendente' ? corpoPendentes : corpoTratadas;
     destino.appendChild(linha);
     destino.appendChild(detalheRow);
