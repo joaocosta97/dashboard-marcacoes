@@ -106,7 +106,7 @@ async function carregarMarcacoes() {
       <td>${dados.contacto || '-'}</td>
       <td>${dados.especialidade || dados.exame || '-'}</td>
       <td>${dados.medico || '-'}</td>
-      <td>${dados.tipo === 'exame' ? '🧪 Exame' : '👨‍⚕️ Consulta'}</td>
+      <td>${dados.tipo === 'exame' ? 'Exame' : 'Consulta'}</td>
     `;
     linha.appendChild(estadoTd);
 
@@ -115,7 +115,7 @@ async function carregarMarcacoes() {
     detalheTd.innerHTML = `
       <div style="padding: 12px; background-color: #f5f5f5; border-left: 3px solid #26a7b5; border-radius: 4px;">
         <label><strong>Observações:</strong></label><br>
-        <textarea style="width: 100%; padding: 6px; border-radius: 4px; font-family: 'Poppins', sans-serif;" rows="3" placeholder="Escreva observações...">${dados.obs || ''}</textarea>
+        <textarea style="width: 100%; padding: 6px; border-radius: 4px; font-family: 'Poppins', sans-serif;" rows="3" placeholder="Observações...">${dados.obs || ''}</textarea>
       </div>
     `;
 
