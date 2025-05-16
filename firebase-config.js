@@ -45,21 +45,31 @@ async function carregarMarcacoes() {
     });
 
     estadoSelect.className = `estado-select ${dados.estado}`;
+    estadoSelect.style.fontWeight = 'bold';
+    estadoSelect.style.border = 'none';
+    estadoSelect.style.padding = '4px 8px';
+    estadoSelect.style.borderRadius = '4px';
+    estadoSelect.style.cursor = 'pointer';
+    estadoSelect.style.transition = 'background-color 0.3s ease, color 0.3s ease';
+
+    // aplica cor inicial
+    aplicarEstiloEstado(estadoSelect, dados.estado);
+
     estadoSelect.onchange = async () => {
       const novoEstado = estadoSelect.value;
       try {
         await updateDoc(doc(db, "marcacoes", documento.id), {
           estado: novoEstado
         });
-        carregarMarcacoes(); // recarrega para aplicar nova classe visual
+        aplicarEstiloEstado(estadoSelect, novoEstado); // muda cor sem reload
       } catch (e) {
         alert('Erro ao atualizar estado.');
         console.error(e);
       }
     };
 
-const estadoTd = document.createElement('td');
-estadoTd.appendChild(estadoSelect);
+    const estadoTd = document.createElement('td');
+    estadoTd.appendChild(estadoSelect);
 
     linha.innerHTML = `
       <td>${dados.dataPedido?.toDate().toLocaleString('pt-PT') || ''}</td>
@@ -74,6 +84,27 @@ estadoTd.appendChild(estadoSelect);
     linha.appendChild(estadoTd);
     tabela.appendChild(linha);
   });
+}
+
+function aplicarEstiloEstado(elemento, estado) {
+  elemento.className = `estado-select ${estado}`;
+  switch (estado) {
+    case 'pendente':
+      elemento.style.backgroundColor = '#fff3cd';
+      elemento.style.color = '#b58900';
+      break;
+    case 'tratado':
+      elemento.style.backgroundColor = '#d4edda';
+      elemento.style.color = 'green';
+      break;
+    case 'cancelado':
+      elemento.style.backgroundColor = '#f8d7da';
+      elemento.style.color = '#c0392b';
+      break;
+    default:
+      elemento.style.backgroundColor = '';
+      elemento.style.color = '';
+  }
 }
 
 carregarMarcacoes();
