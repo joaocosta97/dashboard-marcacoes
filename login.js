@@ -32,7 +32,7 @@ btn.addEventListener('click', async () => {
 
   try {
     await signInWithEmailAndPassword(auth, email, password);
-    window.location.href = "dashboard.html";
+    window.location.href = "layout.html";
   } catch (err) {
     console.error(err);
     erro.textContent = "Credenciais inválidas.";

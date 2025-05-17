@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <title>Elvira - Dashboard</title>
+  <link rel="stylesheet" href="estilo.css" />
+  <script type="module" src="firebase-config.js"></script>
+  <script type="module" src="main.js" defer></script>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <h2>Elvira</h2>
+      <ul>
+        <li><a href="#" data-page="marcacoes.html" class="ativo">Marcações</a></li>
+        <li><a href="#" data-page="estatisticas.html">Estatísticas</a></li>
+        <li><a href="#" data-page="logs.html">Logs</a></li>
+        <li><button id="logout">Terminar Sessão</button></li>
+      </ul>
+    </aside>
+
+    <main class="conteudo">
+      <div id="conteudo">
+        <!-- conteúdo dinâmico será carregado aqui -->
+      </div>
+    </main>
+  </div>
+</body>
+</html>

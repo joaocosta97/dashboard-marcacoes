@@ -64,7 +64,7 @@ setPersistence(auth, browserLocalPersistence).then(() => {
   });
 });
 
-async function carregarMarcacoes() {
+export async function carregarMarcacoes() {
   corpoPendentes.innerHTML = '';
   corpoTratadas.innerHTML = '';
 
