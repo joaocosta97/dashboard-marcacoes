@@ -1,5 +1,8 @@
+import {
+  getAuth,
+  signInWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCFUE-h0mH-NTfDrVTalWpj2M3tREX2HoA",
@@ -17,21 +20,21 @@ const btn = document.getElementById('entrar');
 const erro = document.getElementById('erro');
 
 btn.addEventListener('click', async () => {
-  const user = document.getElementById('utilizador').value.trim();
-  const pass = document.getElementById('password').value;
+  const utilizador = document.getElementById('utilizador').value.trim();
+  const password = document.getElementById('password').value.trim();
 
-  if (!user || !pass) {
-    erro.textContent = 'Preencha todos os campos.';
+  if (!utilizador || !password) {
+    erro.textContent = "Preencha todos os campos.";
     return;
   }
 
-  const emailCompleto = `${user}@marcacoes.pt`;
+  const email = `${utilizador}@marcacoes.pt`;
 
   try {
-    await signInWithEmailAndPassword(auth, emailCompleto, pass);
-    window.location.href = 'index.html';
-  } catch (e) {
-    erro.textContent = 'Credenciais inválidas.';
-    console.error(e);
+    await signInWithEmailAndPassword(auth, email, password);
+    window.location.href = "dashboard.html";
+  } catch (err) {
+    console.error(err);
+    erro.textContent = "Credenciais inválidas.";
   }
 });
