@@ -32,9 +32,6 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-const corpoPendentes = document.getElementById('marcacoes-pendentes');
-const corpoTratadas = document.getElementById('marcacoes-tratadas');
-
 setPersistence(auth, browserLocalPersistence).then(() => {
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
@@ -56,7 +53,7 @@ setPersistence(auth, browserLocalPersistence).then(() => {
         admin: isAdmin
       };
 
-      carregarMarcacoes();
+      // Não carregar marcações aqui — isso agora é feito dinamicamente no main.js
     } catch (err) {
       console.error("Erro ao carregar perfil do utilizador:", err);
       alert("Erro ao verificar permissões.");
@@ -65,6 +62,11 @@ setPersistence(auth, browserLocalPersistence).then(() => {
 });
 
 export async function carregarMarcacoes() {
+  const corpoPendentes = document.getElementById('marcacoes-pendentes');
+  const corpoTratadas = document.getElementById('marcacoes-tratadas');
+
+  if (!corpoPendentes || !corpoTratadas) return;
+
   corpoPendentes.innerHTML = '';
   corpoTratadas.innerHTML = '';
 
@@ -97,10 +99,8 @@ export async function carregarMarcacoes() {
       try {
         const estadoAnterior = dados.estado;
 
-        // Atualizar estado no documento
         await updateDoc(doc(db, "marcacoes", idDoc), { estado: novoEstado });
 
-        // Registar no log
         await addDoc(collection(db, "logs_marcacoes"), {
           idMarcacao: idDoc,
           estadoAnterior: estadoAnterior,
