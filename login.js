@@ -38,3 +38,10 @@ btn.addEventListener('click', async () => {
     erro.textContent = "Credenciais inválidas.";
   }
 });
+
+// Permitir login com Enter no campo de password
+document.getElementById('password').addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') {
+    btn.click();
+  }
+});
