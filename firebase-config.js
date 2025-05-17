@@ -1,4 +1,3 @@
-// firebase-config.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
   getFirestore,
@@ -7,8 +6,17 @@ import {
   query,
   orderBy,
   updateDoc,
-  doc
+  doc,
+  getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+import {
+  getAuth,
+  onAuthStateChanged,
+  setPersistence,
+  browserLocalPersistence,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCFUE-h0mH-NTfDrVTalWpj2M3tREX2HoA",
@@ -21,9 +29,39 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 
 const corpoPendentes = document.getElementById('marcacoes-pendentes');
 const corpoTratadas = document.getElementById('marcacoes-tratadas');
+
+setPersistence(auth, browserLocalPersistence).then(() => {
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      window.location.href = "index.html";
+      return;
+    }
+
+    const uid = user.uid;
+    try {
+      const userDoc = await getDoc(doc(db, "utilizadores", uid));
+      const dadosUser = userDoc.exists() ? userDoc.data() : {};
+      const isAdmin = dadosUser.admin === true;
+      const username = dadosUser.username || user.email;
+
+      window.utilizadorAtual = {
+        uid,
+        email: user.email,
+        username,
+        admin: isAdmin
+      };
+
+      carregarMarcacoes();
+    } catch (err) {
+      console.error("Erro ao carregar perfil do utilizador:", err);
+      alert("Erro ao verificar permissões.");
+    }
+  });
+});
 
 async function carregarMarcacoes() {
   corpoPendentes.innerHTML = '';
@@ -51,12 +89,6 @@ async function carregarMarcacoes() {
     });
 
     estadoSelect.className = `estado-select ${dados.estado}`;
-    estadoSelect.style.fontWeight = 'bold';
-    estadoSelect.style.border = 'none';
-    estadoSelect.style.padding = '4px 8px';
-    estadoSelect.style.borderRadius = '4px';
-    estadoSelect.style.cursor = 'pointer';
-    estadoSelect.style.transition = 'background-color 0.3s ease, color 0.3s ease';
     aplicarEstiloEstado(estadoSelect, dados.estado);
 
     estadoSelect.onchange = async () => {
@@ -158,4 +190,11 @@ function aplicarEstiloEstado(elemento, estado) {
   }
 }
 
-carregarMarcacoes();
+// Botão de logout
+const logoutBtn = document.getElementById('logout');
+if (logoutBtn) {
+  logoutBtn.addEventListener('click', async () => {
+    await signOut(auth);
+    window.location.href = "index.html";
+  });
+}
