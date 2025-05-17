@@ -10,6 +10,45 @@
       margin: 0;
       background-color: #f8f9fa;
       color: #333;
+      display: flex;
+    }
+
+    .sidebar {
+      width: 200px;
+      background-color: #26a7b5;
+      color: white;
+      padding: 20px;
+      height: 100vh;
+      display: none; /* apenas para admin */
+    }
+
+    .sidebar h2 {
+      font-size: 18px;
+      margin-top: 0;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .sidebar li {
+      margin: 12px 0;
+    }
+
+    .sidebar a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .sidebar a:hover {
+      text-decoration: underline;
+    }
+
+    .conteudo {
+      flex: 1;
+      padding: 20px;
     }
 
     header {
@@ -85,43 +124,68 @@
   </style>
 </head>
 <body>
-  <header>
-    📋 Marcações Recebidas - Elvira
-    <button id="logout">Terminar Sessão</button>
-  </header>
+  <div class="sidebar" id="sidebar">
+    <h2>Admin</h2>
+    <ul>
+      <li><a href="dashboard.html">Marcações</a></li>
+      <li><a href="estatisticas.html">Estatísticas</a></li>
+      <li><a href="logs.html">Logs</a></li>
+    </ul>
+  </div>
 
-  <h2 style="padding-left: 16px;">🟡 Pendentes</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Data</th>
-        <th>Nome</th>
-        <th>Nascimento</th>
-        <th>Contacto</th>
-        <th>Especialidade / Exame</th>
-        <th>Médico</th>
-        <th>Tipo</th>
-        <th>Estado</th>
-      </tr>
-    </thead>
-    <tbody id="marcacoes-pendentes"></tbody>
-  </table>
+  <div class="conteudo">
+    <header>
+      📋 Marcações Recebidas - Elvira
+      <button id="logout">Terminar Sessão</button>
+    </header>
 
-  <h2 style="padding-left: 16px;">✅ Tratados / Cancelados</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Data</th>
-        <th>Nome</th>
-        <th>Nascimento</th>
-        <th>Contacto</th>
-        <th>Especialidade / Exame</th>
-        <th>Médico</th>
-        <th>Tipo</th>
-        <th>Estado</th>
-      </tr>
-    </thead>
-    <tbody id="marcacoes-tratadas"></tbody>
-  </table>
+    <h2 style="padding-left: 16px;">🟡 Pendentes</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Nome</th>
+          <th>Nascimento</th>
+          <th>Contacto</th>
+          <th>Especialidade / Exame</th>
+          <th>Médico</th>
+          <th>Tipo</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody id="marcacoes-pendentes"></tbody>
+    </table>
+
+    <h2 style="padding-left: 16px;">✅ Tratados / Cancelados</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Nome</th>
+          <th>Nascimento</th>
+          <th>Contacto</th>
+          <th>Especialidade / Exame</th>
+          <th>Médico</th>
+          <th>Tipo</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody id="marcacoes-tratadas"></tbody>
+    </table>
+  </div>
+
+  <script>
+    // Mostrar a sidebar se for admin
+    window.addEventListener("load", () => {
+      const check = () => {
+        if (window.utilizadorAtual?.admin) {
+          document.getElementById("sidebar").style.display = "block";
+        } else {
+          document.getElementById("sidebar").style.display = "none";
+        }
+      };
+      setTimeout(check, 500); // dá tempo ao firebase-config.js para carregar
+    });
+  </script>
 </body>
 </html>

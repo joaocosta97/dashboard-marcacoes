@@ -7,7 +7,8 @@ import {
   orderBy,
   updateDoc,
   doc,
-  getDoc
+  getDoc,
+  addDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 import {
@@ -94,7 +95,21 @@ async function carregarMarcacoes() {
     estadoSelect.onchange = async () => {
       const novoEstado = estadoSelect.value;
       try {
+        const estadoAnterior = dados.estado;
+
+        // Atualizar estado no documento
         await updateDoc(doc(db, "marcacoes", idDoc), { estado: novoEstado });
+
+        // Registar no log
+        await addDoc(collection(db, "logs_marcacoes"), {
+          idMarcacao: idDoc,
+          estadoAnterior: estadoAnterior,
+          novoEstado: novoEstado,
+          uid: window.utilizadorAtual.uid,
+          username: window.utilizadorAtual.username,
+          timestamp: new Date()
+        });
+
         aplicarEstiloEstado(estadoSelect, novoEstado);
         if (novoEstado === 'pendente') {
           corpoTratadas.removeChild(linha);

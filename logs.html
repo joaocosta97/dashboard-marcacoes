@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Logs - Elvira</title>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      getDocs,
+      query,
+      orderBy
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import {
+      getAuth,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCFUE-h0mH-NTfDrVTalWpj2M3tREX2HoA",
+      authDomain: "chatbot-elvira.firebaseapp.com",
+      projectId: "chatbot-elvira",
+      storageBucket: "chatbot-elvira.firebasestorage.app",
+      messagingSenderId: "794247687628",
+      appId: "1:794247687628:web:e13e114370fe2e278f8169"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "index.html";
+        return;
+      }
+
+      const userSnapshot = await getDocs(collection(db, "utilizadores"));
+      const perfil = userSnapshot.docs.find(doc => doc.id === user.uid);
+      const isAdmin = perfil?.data()?.admin === true;
+
+      if (!isAdmin) {
+        window.location.href = "index.html";
+        return;
+      }
+
+      carregarLogs();
+    });
+
+    async function carregarLogs() {
+      const lista = document.getElementById('lista-logs');
+      const q = query(collection(db, "logs_marcacoes"), orderBy("timestamp", "desc"));
+      const snapshot = await getDocs(q);
+
+      if (snapshot.empty) {
+        lista.innerHTML = '<p>Sem registos de alterações.</p>';
+        return;
+      }
+
+      snapshot.forEach(doc => {
+        const log = doc.data();
+        const li = document.createElement('li');
+
+        const data = log.timestamp?.toDate().toLocaleString('pt-PT') || 'data desconhecida';
+        li.innerHTML = `
+          <strong>${log.username || 'Desconhecido'}</strong> alterou
+          <code>${log.idMarcacao || '???'}</code> de
+          <em>${log.estadoAnterior}</em> para
+          <em>${log.novoEstado}</em> às ${data}.
+        `;
+
+        lista.appendChild(li);
+      });
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+
+    h1 {
+      color: #26a7b5;
+      margin-bottom: 20px;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      background: white;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      box-shadow: 0 0 4px rgba(0,0,0,0.05);
+    }
+
+    em {
+      font-style: normal;
+      font-weight: bold;
+      color: #007bff;
+    }
+
+    code {
+      font-family: monospace;
+      background-color: #eee;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <h1>📜 Registo de Alterações</h1>
+  <ul id="lista-logs"></ul>
+</body>
+</html>
