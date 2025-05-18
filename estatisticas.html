@@ -1,15 +1,35 @@
 <h1>📊 Estatísticas Gerais</h1>
 
-<div class="stat">Total de marcações: <strong id="total">-</strong></div>
-<div class="stat">Pendentes: <strong id="pendentes">-</strong></div>
-<div class="stat">Tratadas: <strong id="tratados">-</strong></div>
-<div class="stat">Canceladas: <strong id="cancelados">-</strong></div>
-<div class="stat">Exames: <strong id="exames">-</strong></div>
-<div class="stat">Consultas: <strong id="consultas">-</strong></div>
+<div class="grid-estatisticas">
+  <div class="card total">
+    <span>Total de marcações</span>
+    <strong id="total">-</strong>
+  </div>
+  <div class="card pendente">
+    <span>Pendentes</span>
+    <strong id="pendentes">-</strong>
+  </div>
+  <div class="card tratado">
+    <span>Tratadas</span>
+    <strong id="tratados">-</strong>
+  </div>
+  <div class="card cancelado">
+    <span>Canceladas</span>
+    <strong id="cancelados">-</strong>
+  </div>
+  <div class="card exame">
+    <span>Exames</span>
+    <strong id="exames">-</strong>
+  </div>
+  <div class="card consulta">
+    <span>Consultas</span>
+    <strong id="consultas">-</strong>
+  </div>
+</div>
 
 <script type="module">
-  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCFUE-h0mH-NTfDrVTalWpj2M3tREX2HoA",
@@ -48,3 +68,40 @@
 
   carregarEstatisticas();
 </script>
+
+<style>
+  .grid-estatisticas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-top: 24px;
+  }
+
+  .card {
+    background-color: white;
+    border-left: 6px solid #ccc;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.05);
+  }
+
+  .card span {
+    display: block;
+    font-size: 14px;
+    color: #666;
+  }
+
+  .card strong {
+    font-size: 24px;
+    color: #333;
+    margin-top: 8px;
+    display: block;
+  }
+
+  .card.total { border-color: #007bff; }
+  .card.pendente { border-color: #b58900; }
+  .card.tratado { border-color: #28a745; }
+  .card.cancelado { border-color: #dc3545; }
+  .card.exame { border-color: #8a2be2; }
+  .card.consulta { border-color: #17a2b8; }
+</style>
