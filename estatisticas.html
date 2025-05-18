@@ -27,7 +27,7 @@
   </div>
 </div>
 
-<h2 style="margin-top: 40px;"> Médicos</h2>
+<h2 style="margin-top: 40px;">Médicos</h2>
 <ul id="top-medicos" class="listagem"></ul>
 
 <h2>Especialidades</h2>
@@ -35,6 +35,11 @@
 
 <h2>Exames</h2>
 <ul id="top-exames" class="listagem"></ul>
+
+<script type="module">
+  import { carregarEstatisticas } from './estatisticas.js';
+  carregarEstatisticas();
+</script>
 
 <style>
   .grid-estatisticas {
@@ -71,6 +76,11 @@
   .card.cancelado { border-color: #dc3545; }
   .card.exame { border-color: #8a2be2; }
   .card.consulta { border-color: #17a2b8; }
+
+  h2 {
+    margin-top: 32px;
+    color: #333;
+  }
 
   .listagem {
     list-style: none;
