@@ -213,3 +213,5 @@ if (logoutBtn) {
     window.location.href = "index.html";
   });
 }
+
+export { db };
