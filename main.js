@@ -34,22 +34,19 @@ function carregarPagina(nomeFicheiro) {
       }
 
       if (nomeFicheiro === "estatisticas.html") {
-        // Esperar que o conteúdo esteja no DOM antes de correr o script embutido
-        setTimeout(() => {
-          const scriptTag = conteudo.querySelector('script[type="module"]');
-          if (scriptTag) {
-            eval(scriptTag.textContent);
+        import("./estatisticas.js").then(m => {
+          if (typeof m.carregarEstatisticas === "function") {
+            m.carregarEstatisticas();
           }
-        }, 50);
+        });
       }
 
       if (nomeFicheiro === "logs.html") {
-        setTimeout(() => {
-          const scriptTag = conteudo.querySelector('script[type="module"]');
-          if (scriptTag) {
-            eval(scriptTag.textContent);
+        import("./logs.js").then(m => {
+          if (typeof m.carregarLogs === "function") {
+            m.carregarLogs();
           }
-        }, 50);
+        });
       }
     })
     .catch(err => {
