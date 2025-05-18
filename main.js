@@ -40,20 +40,13 @@ function carregarPagina(nomeFicheiro) {
           }
         });
       }
-
-      if (nomeFicheiro === "logs.html") {
-        import("./logs.js").then(m => {
-          if (typeof m.carregarLogs === "function") {
-            m.carregarLogs();
-          }
-        });
-      }
     })
     .catch(err => {
       conteudo.innerHTML = `<p>Erro ao carregar ${nomeFicheiro}</p>`;
       console.error(err);
     });
 }
+
 
 // Logout
 document.getElementById("logout").addEventListener("click", () => {
