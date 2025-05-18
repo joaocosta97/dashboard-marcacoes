@@ -4,12 +4,20 @@ import {
   getDocs
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-// Função auxiliar para contar e ordenar um array
+// Função auxiliar: remove acentos e normaliza
+function limparTexto(str) {
+  return str.normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // remove acentos
+    .toLowerCase()
+    .trim();
+}
+
+// Contagem e ordenação dos mais frequentes
 function contarEOrdenar(lista) {
   const contagem = {};
   lista.forEach(item => {
-    if (item && item.trim()) {
-      const chave = item.trim();
+    if (item && item.trim() && item !== '-') {
+      const chave = limparTexto(item);
       contagem[chave] = (contagem[chave] || 0) + 1;
     }
   });
@@ -28,27 +36,31 @@ export async function carregarEstatisticas() {
 
   snapshot.forEach(doc => {
     const m = doc.data();
+    const tipo = limparTexto(m.tipo || '');
 
-    // Contagem por estado
+    // Contar estados
     if (m.estado === 'pendente') pendentes++;
     else if (m.estado === 'tratado') tratados++;
     else if (m.estado === 'cancelado') cancelados++;
 
-    // Contagem por tipo
-    if (m.tipo === 'exame') {
+    // Exames
+    if (tipo === 'exame') {
       exames++;
-      if (m.exame && m.exame.trim()) {
+      if (m.exame && m.exame.trim() && m.exame !== '-') {
         examesLista.push(m.exame.trim());
       }
     }
 
-    if (m.tipo === 'consulta') {
+    // Consultas
+    if (tipo === 'consulta') {
       consultas++;
-      if (m.especialidade && m.especialidade.trim()) {
-        especialidades.push(m.especialidade.trim());
-      }
-      if (m.medico && m.medico.trim()) {
+
+      if (m.medico && m.medico.trim() && m.medico !== '-') {
         medicos.push(m.medico.trim());
+      }
+
+      if (m.especialidade && m.especialidade.trim() && m.especialidade !== '-') {
+        especialidades.push(m.especialidade.trim());
       }
     }
   });
@@ -61,7 +73,7 @@ export async function carregarEstatisticas() {
   document.getElementById('exames').textContent = exames;
   document.getElementById('consultas').textContent = consultas;
 
-  // Calcular e preencher tops
+  // Tops
   preencherLista("top-medicos", contarEOrdenar(medicos));
   preencherLista("top-especialidades", contarEOrdenar(especialidades));
   preencherLista("top-exames", contarEOrdenar(examesLista));
