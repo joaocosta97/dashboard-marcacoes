@@ -4,25 +4,33 @@ import {
   getDocs
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
+// Função auxiliar: remove acentos, espaços duplicados, e normaliza
 function limparTexto(str) {
-  return str.normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
+  return str
     .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // remove acentos
+    .replace(/\s+/g, ' ')            // espaços normais
     .trim();
 }
 
+// Contar e ordenar mantendo nomes originais
 function contarEOrdenar(lista) {
   const contagem = {};
+  const mapaOriginal = {};
+
   lista.forEach(item => {
     if (item && item.trim() && item !== '-') {
-      const chave = item.trim();
+      const chave = limparTexto(item);
       contagem[chave] = (contagem[chave] || 0) + 1;
+      mapaOriginal[chave] = item; // guarda versão original
     }
   });
 
   return Object.entries(contagem)
     .sort((a, b) => b[1] - a[1])
-    .slice(0, 5);
+    .slice(0, 5)
+    .map(([chave, total]) => [mapaOriginal[chave], total]);
 }
 
 export async function carregarEstatisticas() {
@@ -36,10 +44,12 @@ export async function carregarEstatisticas() {
     const m = doc.data();
     const tipo = limparTexto(m.tipo || '');
 
+    // Contar estados
     if (m.estado === 'pendente') pendentes++;
     else if (m.estado === 'tratado') tratados++;
     else if (m.estado === 'cancelado') cancelados++;
 
+    // Exames
     if (tipo === 'exame') {
       exames++;
       if (m.exame && m.exame.trim() && m.exame !== '-') {
@@ -47,17 +57,23 @@ export async function carregarEstatisticas() {
       }
     }
 
+    // Consultas
     if (tipo === 'consulta') {
       consultas++;
-      if (m.medico && m.medico.trim() && m.medico !== '-') {
+
+      if (m.medico && typeof m.medico === 'string' && m.medico.trim() !== '-') {
         medicos.push(m.medico.trim());
+        console.log("👨‍⚕️ Médico detectado:", m.medico);
       }
-      if (m.especialidade && m.especialidade.trim() && m.especialidade !== '-') {
+
+      if (m.especialidade && typeof m.especialidade === 'string' && m.especialidade.trim() !== '-') {
         especialidades.push(m.especialidade.trim());
+        console.log("🩺 Especialidade detectada:", m.especialidade);
       }
     }
   });
 
+  // Mostrar totais
   document.getElementById('total').textContent = total;
   document.getElementById('pendentes').textContent = pendentes;
   document.getElementById('tratados').textContent = tratados;
@@ -65,6 +81,7 @@ export async function carregarEstatisticas() {
   document.getElementById('exames').textContent = exames;
   document.getElementById('consultas').textContent = consultas;
 
+  // Tops
   preencherLista("top-medicos", contarEOrdenar(medicos));
   preencherLista("top-especialidades", contarEOrdenar(especialidades));
   preencherLista("top-exames", contarEOrdenar(examesLista));
