@@ -24,12 +24,32 @@ function carregarPagina(nomeFicheiro) {
     .then(res => res.text())
     .then(html => {
       conteudo.innerHTML = html;
+
       if (nomeFicheiro === "marcacoes.html") {
         import("./firebase-config.js").then(m => {
           if (typeof m.carregarMarcacoes === "function") {
             m.carregarMarcacoes();
           }
         });
+      }
+
+      if (nomeFicheiro === "estatisticas.html") {
+        // Esperar que o conteúdo esteja no DOM antes de correr o script embutido
+        setTimeout(() => {
+          const scriptTag = conteudo.querySelector('script[type="module"]');
+          if (scriptTag) {
+            eval(scriptTag.textContent);
+          }
+        }, 50);
+      }
+
+      if (nomeFicheiro === "logs.html") {
+        setTimeout(() => {
+          const scriptTag = conteudo.querySelector('script[type="module"]');
+          if (scriptTag) {
+            eval(scriptTag.textContent);
+          }
+        }, 50);
       }
     })
     .catch(err => {
