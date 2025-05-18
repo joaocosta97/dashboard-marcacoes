@@ -18,7 +18,7 @@ links.forEach(link => {
   });
 });
 
-// Função para carregar conteúdo da página
+// Carregar conteúdo e JS associado
 function carregarPagina(nomeFicheiro) {
   fetch(nomeFicheiro)
     .then(res => res.text())
@@ -35,9 +35,14 @@ function carregarPagina(nomeFicheiro) {
 
       if (nomeFicheiro === "estatisticas.html") {
         import("./estatisticas.js").then(m => {
+          console.log("✅ estatisticas.js importado");
           if (typeof m.carregarEstatisticas === "function") {
             m.carregarEstatisticas();
+          } else {
+            console.warn("⚠️ carregarEstatisticas não encontrada no módulo");
           }
+        }).catch(err => {
+          console.error("Erro ao importar estatisticas.js:", err);
         });
       }
     })
@@ -46,7 +51,6 @@ function carregarPagina(nomeFicheiro) {
       console.error(err);
     });
 }
-
 
 // Logout
 document.getElementById("logout").addEventListener("click", () => {
