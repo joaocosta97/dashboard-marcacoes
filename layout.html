@@ -25,39 +25,11 @@
       </div>
     </main>
   </div>
-  <!-- Chatbot Elvira -->
+
+  <!-- Chatbot flutuante -->
   <div id="chatbot-box" style="display: none;">
     <iframe src="https://elvira-chatbot-production.up.railway.app" style="width: 100%; height: 100%; border: none;"></iframe>
   </div>
   <button id="chatbot-toggle">💬 Falar com a Elvira</button>
-
-  <script>
-    const toggleBtn = document.getElementById('chatbot-toggle');
-    const box = document.getElementById('chatbot-box');
-
-    toggleBtn.addEventListener('click', () => {
-      const isVisible = box.style.display === 'block';
-      box.style.display = isVisible ? 'none' : 'block';
-    });
-  </script>
-  <script>
-      // Prevenir duplicação do botão ou iframe
-      window.addEventListener('DOMContentLoaded', () => {
-        const allToggles = document.querySelectorAll('#chatbot-toggle');
-        const allBoxes = document.querySelectorAll('#chatbot-box');
-  
-        if (allToggles.length > 1) {
-          for (let i = 1; i < allToggles.length; i++) {
-            allToggles[i].remove();
-          }
-        }
-  
-        if (allBoxes.length > 1) {
-          for (let i = 1; i < allBoxes.length; i++) {
-            allBoxes[i].remove();
-          }
-        }
-      });
-    </script>
 </body>
 </html>
