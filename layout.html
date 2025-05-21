@@ -25,5 +25,19 @@
       </div>
     </main>
   </div>
+<div id="chatbot-box" style="display: none;">
+  <iframe src="https://elvira-chatbot-production.up.railway.app" style="width: 100%; height: 100%; border: none;"></iframe>
+</div>
+<button id="chatbot-toggle">💬 Falar com a Elvira</button>
+<script>
+  const toggleBtn = document.getElementById('chatbot-toggle');
+  const box = document.getElementById('chatbot-box');
+
+  toggleBtn.addEventListener('click', () => {
+    const isVisible = box.style.display === 'block';
+    box.style.display = isVisible ? 'none' : 'block';
+  });
+</script>
+
 </body>
 </html>
