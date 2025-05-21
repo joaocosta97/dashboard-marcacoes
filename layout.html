@@ -38,6 +38,13 @@
     box.style.display = isVisible ? 'none' : 'block';
   });
 </script>
-
+<script>
+  if (document.querySelectorAll('#chatbot-toggle').length > 1) {
+    document.querySelectorAll('#chatbot-toggle')[1].remove();
+  }
+  if (document.querySelectorAll('#chatbot-box').length > 1) {
+    document.querySelectorAll('#chatbot-box')[1].remove();
+  }
+</script>
 </body>
 </html>
