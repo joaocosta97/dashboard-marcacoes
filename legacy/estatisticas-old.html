@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Estatísticas - Elvira</title>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      getDocs
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import {
+      getAuth,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCFUE-h0mH-NTfDrVTalWpj2M3tREX2HoA",
+      authDomain: "chatbot-elvira.firebaseapp.com",
+      projectId: "chatbot-elvira",
+      storageBucket: "chatbot-elvira.firebasestorage.app",
+      messagingSenderId: "794247687628",
+      appId: "1:794247687628:web:e13e114370fe2e278f8169"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "index.html";
+        return;
+      }
+
+      const userDoc = await getDocs(collection(db, "utilizadores"));
+      const perfil = userDoc.docs.find(doc => doc.id === user.uid);
+      const isAdmin = perfil?.data()?.admin === true;
+
+      if (!isAdmin) {
+        window.location.href = "index.html";
+        return;
+      }
+
+      carregarEstatisticas();
+    });
+
+    async function carregarEstatisticas() {
+      const snapshot = await getDocs(collection(db, "marcacoes"));
+      const total = snapshot.size;
+      let pendentes = 0, tratados = 0, cancelados = 0, exames = 0, consultas = 0;
+
+      snapshot.forEach(doc => {
+        const m = doc.data();
+        if (m.estado === 'pendente') pendentes++;
+        else if (m.estado === 'tratado') tratados++;
+        else if (m.estado === 'cancelado') cancelados++;
+
+        if (m.tipo === 'exame') exames++;
+        if (m.tipo === 'consulta') consultas++;
+      });
+
+      document.getElementById('total').textContent = total;
+      document.getElementById('pendentes').textContent = pendentes;
+      document.getElementById('tratados').textContent = tratados;
+      document.getElementById('cancelados').textContent = cancelados;
+      document.getElementById('exames').textContent = exames;
+      document.getElementById('consultas').textContent = consultas;
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+
+    h1 {
+      color: #26a7b5;
+    }
+
+    .stat {
+      background: white;
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      box-shadow: 0 0 4px rgba(0,0,0,0.1);
+    }
+
+    .stat strong {
+      color: #26a7b5;
+      font-size: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>📊 Estatísticas Gerais</h1>
+
+  <div class="stat">Total de marcações: <strong id="total">-</strong></div>
+  <div class="stat">Pendentes: <strong id="pendentes">-</strong></div>
+  <div class="stat">Tratadas: <strong id="tratados">-</strong></div>
+  <div class="stat">Canceladas: <strong id="cancelados">-</strong></div>
+  <div class="stat">Exames: <strong id="exames">-</strong></div>
+  <div class="stat">Consultas: <strong id="consultas">-</strong></div>
+</body>
+</html>
