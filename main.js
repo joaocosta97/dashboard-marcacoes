@@ -45,6 +45,20 @@ function carregarPagina(nomeFicheiro) {
           console.error("Erro ao importar estatisticas.js:", err);
         });
       }
+
+      // Remover elementos duplicados do chatbot
+      setTimeout(() => {
+        const toggles = document.querySelectorAll('#chatbot-toggle');
+        const boxes = document.querySelectorAll('#chatbot-box');
+
+        if (toggles.length > 1) {
+          for (let i = 1; i < toggles.length; i++) toggles[i].remove();
+        }
+
+        if (boxes.length > 1) {
+          for (let i = 1; i < boxes.length; i++) boxes[i].remove();
+        }
+      }, 100);
     })
     .catch(err => {
       conteudo.innerHTML = `<p>Erro ao carregar ${nomeFicheiro}</p>`;
@@ -53,11 +67,14 @@ function carregarPagina(nomeFicheiro) {
 }
 
 // Logout
-document.getElementById("logout").addEventListener("click", () => {
-  import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js").then(({ getAuth, signOut }) => {
-    const auth = getAuth();
-    signOut(auth).then(() => {
-      window.location.href = "index.html";
+const logoutBtn = document.getElementById("logout");
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", () => {
+    import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js").then(({ getAuth, signOut }) => {
+      const auth = getAuth();
+      signOut(auth).then(() => {
+        window.location.href = "index.html";
+      });
     });
   });
-});
+}
