@@ -4,6 +4,9 @@ const links = document.querySelectorAll("a[data-page]");
 // Carrega a primeira página por defeito
 window.addEventListener("DOMContentLoaded", () => {
   carregarPagina("marcacoes.html");
+
+  configurarChatbot();
+
 });
 
 // Navegação dinâmica
@@ -24,6 +27,18 @@ function carregarPagina(nomeFicheiro) {
     .then(res => res.text())
     .then(html => {
       conteudo.innerHTML = html;
+
+      // Elimina duplicações do chatbot
+      const duplicadoToggle = document.querySelectorAll('#chatbot-toggle');
+      const duplicadoBox = document.querySelectorAll('#chatbot-box');
+      if (duplicadoToggle.length > 1) {
+        for (let i = 1; i < duplicadoToggle.length; i++) duplicadoToggle[i].remove();
+      }
+      if (duplicadoBox.length > 1) {
+        for (let i = 1; i < duplicadoBox.length; i++) duplicadoBox[i].remove();
+      }
+
+      configurarChatbot();
 
       if (nomeFicheiro === "marcacoes.html") {
         import("./firebase-config.js").then(m => {
