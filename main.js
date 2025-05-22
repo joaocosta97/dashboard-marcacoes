@@ -48,40 +48,31 @@ function carregarPagina(nomeFicheiro) {
 
       if (nomeFicheiro === "marcacoes.html") {
         import("./firebase-config.js").then(m => {
-          console.log("📦 firebase-config.js importado");
           if (typeof m.carregarMarcacoes === "function") {
             m.carregarMarcacoes();
-          } else {
-            console.warn("⚠️ carregarMarcacoes não encontrada no módulo");
           }
         }).catch(err => {
-          console.error("❌ Erro ao importar firebase-config.js:", err);
+          console.error("Erro ao importar firebase-config.js:", err);
         });
       }
 
       if (nomeFicheiro === "estatisticas.html") {
         import("./estatisticas.js").then(m => {
-          console.log("📦 estatisticas.js importado");
           if (typeof m.carregarEstatisticas === "function") {
             m.carregarEstatisticas();
-          } else {
-            console.warn("⚠️ carregarEstatisticas não encontrada no módulo");
           }
         }).catch(err => {
-          console.error("❌ Erro ao importar estatisticas.js:", err);
+          console.error("Erro ao importar estatisticas.js:", err);
         });
       }
 
       if (nomeFicheiro === "logs.html") {
         import("./logs.js").then(m => {
-          console.log("📦 logs.js importado");
           if (typeof m.carregarLogs === "function") {
             m.carregarLogs();
-          } else {
-            console.warn("⚠️ carregarLogs não encontrada no módulo");
           }
         }).catch(err => {
-          console.error("❌ Erro ao importar logs.js:", err);
+          console.error("Erro ao importar logs.js:", err);
         });
       }
     })
@@ -89,6 +80,28 @@ function carregarPagina(nomeFicheiro) {
       conteudo.innerHTML = `<p>Erro ao carregar ${nomeFicheiro}</p>`;
       console.error(`❌ Falha ao carregar ${nomeFicheiro}:`, err);
     });
+}
+
+// Corrigir duplicação e comportamento do chatbot
+function configurarChatbot() {
+  const toggle = document.getElementById('chatbot-toggle');
+  const box = document.getElementById('chatbot-box');
+
+  if (!toggle || !box) {
+    console.warn("⛔ Botão ou caixa do chatbot não encontrados.");
+    return;
+  }
+
+  // Prevenir múltiplas ligações do evento
+  if (!toggle.dataset.listener) {
+    toggle.addEventListener('click', () => {
+      const isVisible = box.style.display === 'block';
+      box.style.display = isVisible ? 'none' : 'block';
+    });
+    toggle.dataset.listener = "true";
+  }
+
+  console.log("🤖 Chatbot configurado.");
 }
 
 // Logout
