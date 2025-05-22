@@ -4,9 +4,7 @@ const links = document.querySelectorAll("a[data-page]");
 // Carrega a primeira página por defeito
 window.addEventListener("DOMContentLoaded", () => {
   carregarPagina("marcacoes.html");
-
   configurarChatbot();
-
 });
 
 // Navegação dinâmica
@@ -60,6 +58,20 @@ function carregarPagina(nomeFicheiro) {
           console.error("Erro ao importar estatisticas.js:", err);
         });
       }
+
+      if (nomeFicheiro === "logs.html") {
+        import("./logs.js").then(m => {
+          console.log("✅ logs.js importado");
+          if (typeof m.carregarLogs === "function") {
+            m.carregarLogs();
+          } else {
+            console.warn("⚠️ carregarLogs não encontrada no módulo");
+          }
+        }).catch(err => {
+          console.error("Erro ao importar logs.js:", err);
+        });
+      }
+
     })
     .catch(err => {
       conteudo.innerHTML = `<p>Erro ao carregar ${nomeFicheiro}</p>`;
